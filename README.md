@@ -30,12 +30,21 @@ Windows のマスター音量、アプリ別音量ミキサー、マイク入力
 - **スマート開閉動作**
   - 短く押した場合はトグル表示（開いたままじっくり操作・比較可能）、長押ししてそのままスライドした場合はキー／ボタンを離した瞬間に自動で閉じます。
 
-## ビルドと Inno Setup インストーラー作成
+## ダウンロード・インストール
+
+1. [Releases ページ](https://github.com/MametaroGG/VolumePie/releases) から最新のインストーラー（`VolumePie-Setup-1.0.0.exe`）をダウンロードします。
+2. ダウンロードしたインストーラーを実行し、画面の指示に従ってインストールを完了してください。
+3. インストール完了後、スタートメニューやデスクトップのショートカットから VolumePie を起動できます（タスクトレイに常駐します）。
+
+<details>
+<summary>開発者向け：ソースコードからのビルド手順</summary>
+
+PowerShell で以下のスクリプトを実行すると、自己完結バイナリの発行と Inno Setup インストーラーの生成が一括で行われます：
 
 ```powershell
 .\build-installer.ps1
 ```
 
 - 実行ファイル出力先: `publish\VolumePie.exe`
-- Inno Setup スクリプト: `installer\VolumePie.iss`
 - インストーラー出力先: `dist\VolumePie-Setup-1.0.0.exe`
+</details>
