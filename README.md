@@ -1,3 +1,7 @@
+<p align="center">
+  <b>日本語</b> | <a href="README.en.md">English</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文</a> | <a href="README.ko.md">한국어</a>
+</p>
+
 # VolumePie - スライダーパイメニュー (音量ミキサー・マイク・画面輝度)
 
 Windows のマスター音量、アプリ別音量ミキサー、マイク入力音量、および画面の明るさ（内蔵ディスプレイ WMI ＋ 外部モニター DDC/CI ＋ ソフトウェア調光フォールバック）をカーソル位置で瞬時に調整できるラジアル・スライダーパイメニューです。

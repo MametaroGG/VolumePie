@@ -34,12 +34,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "chinesesimplified"; MessagesFile: "Languages\ChineseSimplified.isl"
 Name: "chinesetraditional"; MessagesFile: "Languages\ChineseTraditional.isl"
 Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
-Name: "french"; MessagesFile: "compiler:Languages\French.isl"
-Name: "german"; MessagesFile: "compiler:Languages\German.isl"
-Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
-Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
-Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [CustomMessages]
 japanese.StartupTask=Windows 起動時に VolumePie を自動起動する
@@ -61,30 +55,6 @@ chinesetraditional.UninstallProgram=解除安裝 VolumePie
 korean.StartupTask=Windows 시작 시 VolumePie 자동 실행
 korean.StartupGroup=시작 프로그램 설정:
 korean.UninstallProgram=VolumePie 제거
-
-french.StartupTask=Lancer automatiquement VolumePie au démarrage de Windows
-french.StartupGroup=Paramètres de démarrage:
-french.UninstallProgram=Désinstaller VolumePie
-
-german.StartupTask=VolumePie beim Windows-Start automatisch ausführen
-german.StartupGroup=Autostart-Einstellungen:
-german.UninstallProgram=VolumePie deinstallieren
-
-spanish.StartupTask=Iniciar VolumePie automáticamente al iniciar Windows
-spanish.StartupGroup=Configuración de inicio:
-spanish.UninstallProgram=Desinstalar VolumePie
-
-italian.StartupTask=Avvia automaticamente VolumePie all'avvio di Windows
-italian.StartupGroup=Impostazioni di avvio:
-italian.UninstallProgram=Disinstalla VolumePie
-
-brazilianportuguese.StartupTask=Iniciar automaticamente o VolumePie na inicialização do Windows
-brazilianportuguese.StartupGroup=Configurações de inicialização:
-brazilianportuguese.UninstallProgram=Desinstalar o VolumePie
-
-russian.StartupTask=Автоматически запускать VolumePie при входе в Windows
-russian.StartupGroup=Параметры автозагрузки:
-russian.UninstallProgram=Удалить VolumePie
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
