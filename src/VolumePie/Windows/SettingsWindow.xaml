@@ -1490,9 +1490,9 @@
 
                                             Grid.Column="1"
 
-                                            Minimum="70"
+                                            Minimum="60"
 
-                                            Maximum="130"
+                                            Maximum="160"
 
                                             Value="85"
 

@@ -175,9 +175,7 @@ public partial class PieOverlayWindow : Window
     {
         if (!IsVisible) return;
 
-        var dpi = VisualTreeHelper.GetDpi(this);
-        double scaleX = dpi.DpiScaleX > 0 ? dpi.DpiScaleX : 1.0;
-        double scaleY = dpi.DpiScaleY > 0 ? dpi.DpiScaleY : 1.0;
+        var (scaleX, scaleY) = GetScreenDpiScale(new POINT { X = screenX, Y = screenY });
 
         double dipX = screenX / scaleX;
         double dipY = screenY / scaleY;
@@ -192,7 +190,7 @@ public partial class PieOverlayWindow : Window
             return;
         }
 
-        double s = Math.Clamp(_settingsService.Current.MenuScale, 70, 130) / 100.0;
+        double s = Math.Clamp(_settingsService.Current.MenuScale, 60, 160) / 100.0;
         double localX = relX / s;
         double localY = relY / s;
 
@@ -561,9 +559,7 @@ public partial class PieOverlayWindow : Window
         var screen = System.Windows.Forms.Screen.FromPoint(new System.Drawing.Point(pt.X, pt.Y));
         var workArea = screen.WorkingArea;
 
-        var dpi = VisualTreeHelper.GetDpi(this);
-        double scaleX = dpi.DpiScaleX > 0 ? dpi.DpiScaleX : 1.0;
-        double scaleY = dpi.DpiScaleY > 0 ? dpi.DpiScaleY : 1.0;
+        var (scaleX, scaleY) = GetScreenDpiScale(pt);
 
         double cursorDipX = pt.X / scaleX;
         double cursorDipY = pt.Y / scaleY;
@@ -573,7 +569,7 @@ public partial class PieOverlayWindow : Window
         double workRight = workArea.Right / scaleX;
         double workBottom = workArea.Bottom / scaleY;
 
-        double s = Math.Clamp(_settingsService.Current.MenuScale, 70, 130) / 100.0;
+        double s = Math.Clamp(_settingsService.Current.MenuScale, 60, 160) / 100.0;
 
         Width = Math.Round(600.0 * s);
         Height = Math.Round(610.0 * s);
@@ -720,12 +716,36 @@ public partial class PieOverlayWindow : Window
     private const byte VK_ESCAPE = 0x1B;
     private const uint KEYEVENTF_KEYUP = 0x0002;
 
+    private (double scaleX, double scaleY) GetScreenDpiScale(POINT pt)
+    {
+        try
+        {
+            var hMon = MonitorFromPoint(pt, 2 /* MONITOR_DEFAULTTONEAREST */);
+            if (hMon != IntPtr.Zero && GetDpiForMonitor(hMon, 0 /* MDT_EFFECTIVE_DPI */, out uint dpiX, out uint dpiY) == 0 && dpiX > 0 && dpiY > 0)
+            {
+                return (dpiX / 96.0, dpiY / 96.0);
+            }
+        }
+        catch
+        {
+        }
+
+        var dpi = VisualTreeHelper.GetDpi(this);
+        return (dpi.DpiScaleX > 0 ? dpi.DpiScaleX : 1.0, dpi.DpiScaleY > 0 ? dpi.DpiScaleY : 1.0);
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     private struct POINT
     {
         public int X;
         public int Y;
     }
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr MonitorFromPoint(POINT pt, uint dwFlags);
+
+    [DllImport("shcore.dll")]
+    private static extern int GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
 
     [DllImport("user32.dll")]
     private static extern bool GetCursorPos(out POINT lpPoint);

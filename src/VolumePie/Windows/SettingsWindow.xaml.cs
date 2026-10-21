@@ -253,7 +253,7 @@ public partial class SettingsWindow : Window
 
         if (PreviewViewbox != null)
         {
-            double scaleRatio = Math.Clamp(_workingCopy.MenuScale, 70, 130) / 100.0;
+            double scaleRatio = Math.Clamp(_workingCopy.MenuScale, 60, 160) / 100.0;
             PreviewViewbox.Width = Math.Round(260.0 * scaleRatio);
             PreviewViewbox.Height = Math.Round(260.0 * scaleRatio);
         }
@@ -893,7 +893,7 @@ public partial class SettingsWindow : Window
 
         if (SldMenuScale != null)
         {
-            SldMenuScale.Value = Math.Clamp(s.MenuScale, 70, 130);
+            SldMenuScale.Value = Math.Clamp(s.MenuScale, 60, 160);
             TxtMenuScale.Text = $"{(int)SldMenuScale.Value} %";
         }
 
