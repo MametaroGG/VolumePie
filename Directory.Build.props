@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- Place obj/ and bin/ on local NTFS (%LOCALAPPDATA%\Temp) to avoid Google Drive virtual filesystem MemoryMappedFile limitations during CreateAppHost -->
+    <BaseIntermediateOutputPath>$(LocalAppData)\Temp\VolumePieBuild\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(LocalAppData)\Temp\VolumePieBuild\bin\</BaseOutputPath>
+  </PropertyGroup>
+</Project>

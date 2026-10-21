@@ -1,0 +1,12 @@
+# Build & Publish Outputs
+bin/
+obj/
+publish/
+publish_single/
+dist/
+scratch/
+
+# Visual Studio & User files
+.vs/
+*.user
+*.suo
