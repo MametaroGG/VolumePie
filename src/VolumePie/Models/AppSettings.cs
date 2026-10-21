@@ -114,7 +114,7 @@ public class AppSettings
     public UiLightingEffect LightingEffect { get; set; } = UiLightingEffect.Minimal;
     public UiColorPreset ColorPreset { get; set; } = UiColorPreset.Monochrome;
     public SliceLabelStyle SliceLabelStyle { get; set; } = SliceLabelStyle.IconOnly;
-    public int MenuScale { get; set; } = 85;
+    public int MenuScale { get; set; } = 100;
 
     /// <summary>
     /// trueの場合、スライダーをドラッグして離した瞬間に自動でパイメニューを閉じる

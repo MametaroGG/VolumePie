@@ -1494,7 +1494,7 @@
 
                                             Maximum="160"
 
-                                            Value="85"
+                                            Value="100"
 
                                             TickFrequency="5"
 
@@ -1508,7 +1508,7 @@
 
                                                Grid.Column="2"
 
-                                               Text="85 %"
+                                               Text="100 %"
 
                                                HorizontalAlignment="Right"
 
