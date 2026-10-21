@@ -13,7 +13,7 @@
         ResizeMode="NoResize"
         WindowStartupLocation="Manual"
         FocusVisualStyle="{x:Null}"
-        KeyDown="Window_KeyDown"
+        PreviewKeyDown="Window_PreviewKeyDown"
         Deactivated="Window_Deactivated">
 
     <Window.Resources>
