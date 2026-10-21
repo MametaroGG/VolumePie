@@ -1365,7 +1365,7 @@ public class PieMenuCanvas : FrameworkElement
 
         var valRowY = contentPos.Y + 8.5;
         string valStr = item.Category == PieItemCategory.Navigation
-            ? (item.CustomDisplayValue ?? "開く ▶")
+            ? (item.CustomDisplayValue ?? LocalizationService.Get("Loc_PieAppsListBadge"))
             : (item.IsMuted ? "MUTE" : $"{Math.Round(item.Value)}%");
         var valColor = item.Category == PieItemCategory.Navigation
             ? (isSelected ? _palette.Accent : WithAlpha(_palette.TextPrimary, 220))
@@ -1431,7 +1431,7 @@ public class PieMenuCanvas : FrameworkElement
         }
 
         string valStr = item.Category == PieItemCategory.Navigation
-            ? (item.CustomDisplayValue ?? "一覧 ▶")
+            ? (item.CustomDisplayValue ?? LocalizationService.Get("Loc_PieAppsListBadge"))
             : (item.IsMuted ? "MUTE" : $"{Math.Round(item.Value)}%");
         var valColor = item.Category == PieItemCategory.Navigation
             ? (isSelected ? _palette.Accent : WithAlpha(_palette.TextPrimary, 225))
@@ -1680,7 +1680,7 @@ public class PieMenuCanvas : FrameworkElement
             {
                 DrawCenteredText(
                     dc,
-                    "アプリ音量",
+                    LocalizationService.Get("Loc_PieAppVolume"),
                     new System.Windows.Point(center.X, center.Y - 18),
                     13.0,
                     MediumTypeface,
@@ -1696,7 +1696,7 @@ public class PieMenuCanvas : FrameworkElement
 
                 DrawCenteredText(
                     dc,
-                    "クリックして一覧を開く",
+                    "クリックして一覧表示",
                     new System.Windows.Point(center.X, center.Y + 22),
                     10.8,
                     UiTypeface,
@@ -1736,29 +1736,28 @@ public class PieMenuCanvas : FrameworkElement
                 string hint;
                 if (IsInSubPage)
                 {
-                    hint = "中央または右クリックで戻る";
+                    hint = LocalizationService.Get("Loc_PieBackHint");
                 }
                 else if (_isDraggingSlider)
                 {
-                    hint = "ボタンを離すとこの値で確定";
+                    hint = LocalizationService.Get("Loc_PieConfirmHint");
                 }
                 else
                 {
                     hint = _sliderMode switch
                     {
-                        PieSliderMode.RadialGauge => "左ドラッグ / ホイールで調整",
-                        PieSliderMode.RotaryDial => "円周ドラッグ / ホイールで調整",
-                        PieSliderMode.OuterArcExpand => "外周バーを左ドラッグ",
+                        PieSliderMode.RadialGauge => LocalizationService.Get("Loc_PieRadialAdjustHint"),
+                        PieSliderMode.RotaryDial => LocalizationService.Get("Loc_PieRotaryAdjustHint"),
+                        PieSliderMode.OuterArcExpand => LocalizationService.Get("Loc_PieArcAdjustHint"),
                         _ => ""
                     };
                 }
 
-                DrawCenteredText(
+                DrawHubBottomHint(
                     dc,
                     hint,
-                    new System.Windows.Point(center.X, center.Y + 24),
-                    10.8,
-                    MediumTypeface,
+                    center,
+                    23.0,
                     new SolidColorBrush(WithAlpha(_palette.TextPrimary, 185)));
             }
         }
@@ -1772,7 +1771,7 @@ public class PieMenuCanvas : FrameworkElement
 
                 DrawCenteredText(
                     dc,
-                    "◀ 戻る",
+                    LocalizationService.Get("Loc_PieBack"),
                     new System.Windows.Point(center.X, center.Y - 14),
                     16.0,
                     BoldTypeface,
@@ -1780,7 +1779,7 @@ public class PieMenuCanvas : FrameworkElement
 
                 DrawCenteredText(
                     dc,
-                    "アプリ音量一覧",
+                    LocalizationService.Get("Loc_PieAppMixerTitle"),
                     new System.Windows.Point(center.X, center.Y + 6),
                     12.0,
                     MediumTypeface,
@@ -1996,6 +1995,36 @@ public class PieMenuCanvas : FrameworkElement
     {
         if (string.IsNullOrEmpty(text) || text.Length <= maxLen) return text;
         return text[..(maxLen - 1)] + "…";
+    }
+
+    private void DrawHubBottomHint(
+        DrawingContext dc,
+        string text,
+        System.Windows.Point center,
+        double yOffset,
+        System.Windows.Media.Brush foreground)
+    {
+        if (string.IsNullOrEmpty(text)) return;
+        double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+        double fontSize = 10.2;
+        const double maxW = 104.0; // Guaranteed safe boundary within CenterR=72 and progress ring
+
+        var ft = new FormattedText(
+            text,
+            CultureInfo.CurrentUICulture,
+            System.Windows.FlowDirection.LeftToRight,
+            MediumTypeface,
+            fontSize,
+            foreground,
+            pixelsPerDip);
+
+        while (ft.Width > maxW && fontSize > 8.0)
+        {
+            fontSize -= 0.5;
+            ft.SetFontSize(fontSize);
+        }
+
+        dc.DrawText(ft, new System.Windows.Point(center.X - ft.Width / 2.0, center.Y + yOffset - ft.Height / 2.0));
     }
 
     private void DrawCenteredText(

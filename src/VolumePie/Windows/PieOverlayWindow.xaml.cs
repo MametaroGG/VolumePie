@@ -54,6 +54,15 @@ public partial class PieOverlayWindow : Window
         {
             Dispatcher.BeginInvoke(() => ApplySettingsToUi(_settingsService.Current));
         };
+        LocalizationService.LanguageChanged += () =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                RefreshOutputDeviceBar();
+                RefreshPieItems();
+                PieCanvas.InvalidateVisual();
+            });
+        };
 
         ApplySettingsToUi(_settingsService.Current);
     }
@@ -427,7 +436,7 @@ public partial class PieOverlayWindow : Window
                 items.Add(new PieItem
                 {
                     Id = "master_vol",
-                    Title = "マスター音量",
+                    Title = LocalizationService.Get("Loc_PieMasterVolume"),
                     Subtitle = TxtOutputDeviceName.Text,
                     Category = PieItemCategory.MasterVolume,
                     Value = vol,
@@ -447,7 +456,7 @@ public partial class PieOverlayWindow : Window
                 items.Add(new PieItem
                 {
                     Id = "screen_brightness",
-                    Title = "画面の明るさ",
+                    Title = LocalizationService.Get("Loc_PieBrightness"),
                     Subtitle = _brightnessService.BackendDescription,
                     Category = PieItemCategory.Brightness,
                     Value = br,
@@ -467,8 +476,8 @@ public partial class PieOverlayWindow : Window
                     items.Add(new PieItem
                     {
                         Id = "mic_vol",
-                        Title = "マイク音量",
-                        Subtitle = "マイク入力",
+                        Title = LocalizationService.Get("Loc_PieMicVolume"),
+                        Subtitle = LocalizationService.Get("Loc_PieMicInput"),
                         Category = PieItemCategory.MicVolume,
                         Value = micVol,
                         IsMuted = micMuted,
@@ -500,11 +509,11 @@ public partial class PieOverlayWindow : Window
                     items.Add(new PieItem
                     {
                         Id = "nav_apps",
-                        Title = "アプリ一覧",
-                        Subtitle = $"{allApps.Count}個のアプリ ▶",
+                        Title = LocalizationService.Get("Loc_PieAppMixer"),
+                        Subtitle = $"{allApps.Count} {LocalizationService.Get("Loc_PieAppsCountSuffix")}",
                         Category = PieItemCategory.Navigation,
                         Value = 0,
-                        CustomDisplayValue = "一覧 ▶",
+                        CustomDisplayValue = LocalizationService.Get("Loc_PieAppsListBadge"),
                         CanMute = false,
                         AccentColor = System.Windows.Media.Color.FromRgb(168, 85, 247),
                         OnInvoked = () => SwitchToPage(PiePage.Apps)
@@ -520,7 +529,7 @@ public partial class PieOverlayWindow : Window
             items.Add(new PieItem
             {
                 Id = "master_vol",
-                Title = "マスター音量",
+                Title = LocalizationService.Get("Loc_PieMasterVolume"),
                 Subtitle = TxtOutputDeviceName.Text,
                 Category = PieItemCategory.MasterVolume,
                 Value = vol,

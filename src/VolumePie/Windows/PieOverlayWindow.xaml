@@ -129,7 +129,7 @@
                 CornerRadius="18"
                 Padding="4,3"
                 MouseWheel="TopDeviceBarBorder_MouseWheel"
-                ToolTip="クリックで出力デバイス一覧を表示 / ホイール回転で即座に切替">
+                ToolTip="{DynamicResource Loc_PieOutputDeviceBarTooltip}">
             <Button x:Name="BtnOutputDevice"
                     Click="BtnOutputDevice_Click"
                     Background="Transparent"
@@ -152,7 +152,7 @@
                                VerticalAlignment="Center"
                                Margin="0,0,6,0"/>
                     <TextBlock x:Name="TxtOutputDeviceLabel"
-                               Text="出力デバイス:"
+                               Text="{DynamicResource Loc_PieOutputDeviceLabel}"
                                Foreground="#A1A1AA"
                                FontSize="12"
                                FontWeight="SemiBold"
@@ -197,13 +197,13 @@
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0" Margin="6,2,6,8">
                     <TextBlock x:Name="TxtDevicePopupTitle"
-                               Text="出力デバイス"
+                               Text="{DynamicResource Loc_PieDevicePopupTitle}"
                                FontSize="12.5"
                                FontWeight="Bold"
                                Foreground="#F4F4F5"
                                VerticalAlignment="Center"/>
                     <TextBlock x:Name="TxtDevicePopupHint"
-                               Text="クリックで切替"
+                               Text="{DynamicResource Loc_PieDevicePopupHint}"
                                FontSize="11"
                                Foreground="#A1A1AA"
                                HorizontalAlignment="Right"

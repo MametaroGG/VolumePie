@@ -288,9 +288,38 @@ public static class LocalizationService
 
         ["Loc_SystemSounds"] = "システム音",
 
-        ["Loc_MoreApps"] = "その他アプリ"
-
+        ["Loc_MoreApps"] = "その他アプリ",
+        // Pie Overlay & Center Hub
+        ["Loc_PieMasterVolume"] = "マスター音量",
+        ["Loc_PieBrightness"] = "画面の明るさ",
+        ["Loc_PieMicVolume"] = "マイク音量",
+        ["Loc_PieMicInput"] = "マイク入力",
+        ["Loc_PieSystemSounds"] = "システム音",
+        ["Loc_PieWindowsSounds"] = "Windows システム音",
+        ["Loc_PiePlayingApp"] = "再生中アプリ",
+        ["Loc_PieAppMixer"] = "アプリ一覧",
+        ["Loc_PieAppsCountSuffix"] = "個のアプリ ▶",
+        ["Loc_PieAppsListBadge"] = "一覧 ▶",
+        ["Loc_PieAppVolume"] = "アプリ音量",
+        ["Loc_PieClickToOpenApps"] = "クリックして一覧表示",
+        ["Loc_PieBack"] = "◀ 戻る",
+        ["Loc_PieAppMixerTitle"] = "アプリ音量一覧",
+        ["Loc_PieClickToReturnMain"] = "クリックでメインへ",
+        ["Loc_PieCloseHint"] = "中央クリックで閉じる",
+        ["Loc_PieBackHint"] = "右クリックで戻る",
+        ["Loc_PieConfirmHint"] = "ボタンを離して確定",
+        ["Loc_PieRadialAdjustHint"] = "ドラッグ / ホイールで調整",
+        ["Loc_PieRotaryAdjustHint"] = "円周ドラッグで調整",
+        ["Loc_PieArcAdjustHint"] = "外周バーをドラッグ",
+        ["Loc_PieOutputDeviceLabel"] = "出力デバイス:",
+        ["Loc_PieOutputDeviceBarTooltip"] = "クリックで出力デバイス一覧を表示 / ホイール回転で即座に切替",
+        ["Loc_PieDevicePopupTitle"] = "出力デバイス",
+        ["Loc_PieDevicePopupHint"] = "クリックで切替",
+        ["Loc_ModeRadial"] = "ラジアル型",
+        ["Loc_ModeRotary"] = "ダイヤル型",
+        ["Loc_ModeArc"] = "外周アーク型",
     };
+
 
 
 
@@ -548,9 +577,38 @@ public static class LocalizationService
 
         ["Loc_SystemSounds"] = "System Sounds",
 
-        ["Loc_MoreApps"] = "More Apps"
-
+        ["Loc_MoreApps"] = "More Apps",
+        // Pie Overlay & Center Hub
+        ["Loc_PieMasterVolume"] = "Master Volume",
+        ["Loc_PieBrightness"] = "Brightness",
+        ["Loc_PieMicVolume"] = "Microphone",
+        ["Loc_PieMicInput"] = "Mic Input",
+        ["Loc_PieSystemSounds"] = "System Sounds",
+        ["Loc_PieWindowsSounds"] = "Windows Sounds",
+        ["Loc_PiePlayingApp"] = "Now Playing",
+        ["Loc_PieAppMixer"] = "App Mixer",
+        ["Loc_PieAppsCountSuffix"] = "apps ▶",
+        ["Loc_PieAppsListBadge"] = "Apps ▶",
+        ["Loc_PieAppVolume"] = "App Volume",
+        ["Loc_PieClickToOpenApps"] = "Click to open mixer",
+        ["Loc_PieBack"] = "◀ Back",
+        ["Loc_PieAppMixerTitle"] = "App Volume Mixer",
+        ["Loc_PieClickToReturnMain"] = "Click to return to main",
+        ["Loc_PieCloseHint"] = "Center click to close",
+        ["Loc_PieBackHint"] = "Right click to go back",
+        ["Loc_PieConfirmHint"] = "Release to confirm",
+        ["Loc_PieRadialAdjustHint"] = "Drag / Scroll to adjust",
+        ["Loc_PieRotaryAdjustHint"] = "Rotate / Scroll to adjust",
+        ["Loc_PieArcAdjustHint"] = "Drag outer arc",
+        ["Loc_PieOutputDeviceLabel"] = "Output Device:",
+        ["Loc_PieOutputDeviceBarTooltip"] = "Click for device list / Scroll to switch",
+        ["Loc_PieDevicePopupTitle"] = "Output Devices",
+        ["Loc_PieDevicePopupHint"] = "Click to switch",
+        ["Loc_ModeRadial"] = "Radial",
+        ["Loc_ModeRotary"] = "Dial",
+        ["Loc_ModeArc"] = "Arc Slider",
     };
+
 
 
 
@@ -808,9 +866,38 @@ public static class LocalizationService
 
         ["Loc_SystemSounds"] = "系统声音",
 
-        ["Loc_MoreApps"] = "更多应用"
-
+        ["Loc_MoreApps"] = "更多应用",
+        // Pie Overlay & Center Hub
+        ["Loc_PieMasterVolume"] = "主音量",
+        ["Loc_PieBrightness"] = "屏幕亮度",
+        ["Loc_PieMicVolume"] = "麦克风音量",
+        ["Loc_PieMicInput"] = "麦克风输入",
+        ["Loc_PieSystemSounds"] = "系统提示音",
+        ["Loc_PieWindowsSounds"] = "Windows 系统提示音",
+        ["Loc_PiePlayingApp"] = "正在播放",
+        ["Loc_PieAppMixer"] = "应用列表",
+        ["Loc_PieAppsCountSuffix"] = "个应用 ▶",
+        ["Loc_PieAppsListBadge"] = "列表 ▶",
+        ["Loc_PieAppVolume"] = "应用音量",
+        ["Loc_PieClickToOpenApps"] = "点击打开应用列表",
+        ["Loc_PieBack"] = "◀ 返回",
+        ["Loc_PieAppMixerTitle"] = "应用音量列表",
+        ["Loc_PieClickToReturnMain"] = "点击返回主菜单",
+        ["Loc_PieCloseHint"] = "中键点击关闭",
+        ["Loc_PieBackHint"] = "右键点击返回",
+        ["Loc_PieConfirmHint"] = "松开以确认",
+        ["Loc_PieRadialAdjustHint"] = "拖拽 / 滚轮调节",
+        ["Loc_PieRotaryAdjustHint"] = "圆周拖拽调节",
+        ["Loc_PieArcAdjustHint"] = "拖拽外弧调节",
+        ["Loc_PieOutputDeviceLabel"] = "输出设备:",
+        ["Loc_PieOutputDeviceBarTooltip"] = "点击显示设备列表 / 滚轮即时切换",
+        ["Loc_PieDevicePopupTitle"] = "输出设备",
+        ["Loc_PieDevicePopupHint"] = "点击切换",
+        ["Loc_ModeRadial"] = "径向规",
+        ["Loc_ModeRotary"] = "表盘",
+        ["Loc_ModeArc"] = "外弧滑块",
     };
+
 
 
 
@@ -1068,9 +1155,38 @@ public static class LocalizationService
 
         ["Loc_SystemSounds"] = "시스템 소리",
 
-        ["Loc_MoreApps"] = "기타 앱"
-
+        ["Loc_MoreApps"] = "기타 앱",
+        // Pie Overlay & Center Hub
+        ["Loc_PieMasterVolume"] = "마스터 볼륨",
+        ["Loc_PieBrightness"] = "화면 밝기",
+        ["Loc_PieMicVolume"] = "마이크 볼륨",
+        ["Loc_PieMicInput"] = "마이크 입력",
+        ["Loc_PieSystemSounds"] = "시스템 소리",
+        ["Loc_PieWindowsSounds"] = "Windows 시스템 소리",
+        ["Loc_PiePlayingApp"] = "재생 중 앱",
+        ["Loc_PieAppMixer"] = "앱 목록",
+        ["Loc_PieAppsCountSuffix"] = "개 앱 ▶",
+        ["Loc_PieAppsListBadge"] = "목록 ▶",
+        ["Loc_PieAppVolume"] = "앱 볼륨",
+        ["Loc_PieClickToOpenApps"] = "클릭하여 앱 목록 열기",
+        ["Loc_PieBack"] = "◀ 뒤로",
+        ["Loc_PieAppMixerTitle"] = "앱 볼륨 목록",
+        ["Loc_PieClickToReturnMain"] = "클릭하여 기본으로",
+        ["Loc_PieCloseHint"] = "가운데 클릭으로 닫기",
+        ["Loc_PieBackHint"] = "우클릭으로 뒤로",
+        ["Loc_PieConfirmHint"] = "놓아서 확인",
+        ["Loc_PieRadialAdjustHint"] = "드래그 / 휠로 조절",
+        ["Loc_PieRotaryAdjustHint"] = "회전 드래그로 조절",
+        ["Loc_PieArcAdjustHint"] = "외부 아크 드래그",
+        ["Loc_PieOutputDeviceLabel"] = "출력 장치:",
+        ["Loc_PieOutputDeviceBarTooltip"] = "클릭하여 장치 목록 표시 / 휠 회전으로 즉시 전환",
+        ["Loc_PieDevicePopupTitle"] = "출력 장치",
+        ["Loc_PieDevicePopupHint"] = "클릭하여 전환",
+        ["Loc_ModeRadial"] = "방사형",
+        ["Loc_ModeRotary"] = "다이얼",
+        ["Loc_ModeArc"] = "외부 아크",
     };
+
 
 
 
@@ -1328,9 +1444,38 @@ public static class LocalizationService
 
         ["Loc_SystemSounds"] = "系統音效",
 
-        ["Loc_MoreApps"] = "更多應用程式"
-
+        ["Loc_MoreApps"] = "更多應用程式",
+        // Pie Overlay & Center Hub
+        ["Loc_PieMasterVolume"] = "主要音量",
+        ["Loc_PieBrightness"] = "螢幕亮度",
+        ["Loc_PieMicVolume"] = "麥克風音量",
+        ["Loc_PieMicInput"] = "麥克風輸入",
+        ["Loc_PieSystemSounds"] = "系統音效",
+        ["Loc_PieWindowsSounds"] = "Windows 系統音效",
+        ["Loc_PiePlayingApp"] = "正在播放",
+        ["Loc_PieAppMixer"] = "應用程式清單",
+        ["Loc_PieAppsCountSuffix"] = "個應用程式 ▶",
+        ["Loc_PieAppsListBadge"] = "清單 ▶",
+        ["Loc_PieAppVolume"] = "應用程式音量",
+        ["Loc_PieClickToOpenApps"] = "點擊開啟應用程式清單",
+        ["Loc_PieBack"] = "◀ 返回",
+        ["Loc_PieAppMixerTitle"] = "應用程式音量清單",
+        ["Loc_PieClickToReturnMain"] = "點擊返回主選單",
+        ["Loc_PieCloseHint"] = "中鍵點擊關閉",
+        ["Loc_PieBackHint"] = "右鍵點擊返回",
+        ["Loc_PieConfirmHint"] = "放開以確認",
+        ["Loc_PieRadialAdjustHint"] = "拖曳 / 滾輪調節",
+        ["Loc_PieRotaryAdjustHint"] = "圓周拖曳調節",
+        ["Loc_PieArcAdjustHint"] = "拖曳外弧調節",
+        ["Loc_PieOutputDeviceLabel"] = "輸出裝置:",
+        ["Loc_PieOutputDeviceBarTooltip"] = "點擊顯示裝置清單 / 滾輪即時切換",
+        ["Loc_PieDevicePopupTitle"] = "輸出裝置",
+        ["Loc_PieDevicePopupHint"] = "點擊切換",
+        ["Loc_ModeRadial"] = "放射型",
+        ["Loc_ModeRotary"] = "轉盤",
+        ["Loc_ModeArc"] = "外弧滑桿",
     };
+
 
 
 
