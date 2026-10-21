@@ -8,6 +8,8 @@ New-Item -ItemType Directory -Force -Path $tempPublish | Out-Null
 New-Item -ItemType Directory -Force -Path $tempDist | Out-Null
 
 Write-Host "=== 1. Building and publishing VolumePie ===" -ForegroundColor Cyan
+Get-Process VolumePie -ErrorAction SilentlyContinue | Stop-Process -Force
+Start-Sleep -Milliseconds 300
 if (Test-Path "src\VolumePie\obj") {
     Remove-Item -Recurse -Force "src\VolumePie\obj" -ErrorAction SilentlyContinue
 }

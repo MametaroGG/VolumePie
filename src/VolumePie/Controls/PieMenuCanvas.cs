@@ -1390,9 +1390,14 @@ public class PieMenuCanvas : FrameworkElement
         bool isSelected,
         double pixelsPerDip)
     {
-        // Prominent centered icon + value below (ultra-clean minimalist look)
-        const double iconSize = 30.0;
-        var iconCenter = new System.Windows.Point(contentPos.X, contentPos.Y - 9.5);
+        // Dynamically scale icon and text to fit the wedge size and item count
+        int count = Math.Max(1, _items.Count);
+        double iconSize = count <= 4 ? 42.0 : (count <= 6 ? 35.0 : 28.0);
+        double valFontSize = count <= 4 ? (isSelected ? 20.0 : 18.0) : (count <= 6 ? (isSelected ? 17.5 : 16.0) : (isSelected ? 15.0 : 14.0));
+        double iconOffsetY = count <= 4 ? 14.5 : (count <= 6 ? 12.0 : 9.5);
+        double valOffsetY = count <= 4 ? 18.5 : (count <= 6 ? 15.5 : 13.5);
+
+        var iconCenter = new System.Windows.Point(contentPos.X, contentPos.Y - iconOffsetY);
 
         if (item.AppIcon != null)
         {
@@ -1425,7 +1430,6 @@ public class PieMenuCanvas : FrameworkElement
             }
         }
 
-        var valRowY = contentPos.Y + 14.5;
         string valStr = item.Category == PieItemCategory.Navigation
             ? (item.CustomDisplayValue ?? "一覧 ▶")
             : (item.IsMuted ? "MUTE" : $"{Math.Round(item.Value)}%");
@@ -1433,12 +1437,13 @@ public class PieMenuCanvas : FrameworkElement
             ? (isSelected ? _palette.Accent : WithAlpha(_palette.TextPrimary, 225))
             : (item.IsMuted ? _palette.TextMutedAlert : (isSelected ? _palette.TextPrimary : WithAlpha(_palette.TextPrimary, 225)));
         var valTypeface = BoldTypeface;
+        var valRowY = contentPos.Y + valOffsetY;
         var valFt = new FormattedText(
             valStr,
             CultureInfo.CurrentUICulture,
             System.Windows.FlowDirection.LeftToRight,
             valTypeface,
-            isSelected ? 16.0 : 14.8,
+            valFontSize,
             new SolidColorBrush(valColor),
             pixelsPerDip);
         var valPt = new System.Windows.Point(contentPos.X - valFt.Width / 2.0, valRowY - valFt.Height / 2.0);
@@ -1794,8 +1799,8 @@ public class PieMenuCanvas : FrameworkElement
                 DrawCenteredText(
                     dc,
                     "VolumePie",
-                    new System.Windows.Point(center.X, center.Y - 16),
-                    14.5,
+                    new System.Windows.Point(center.X, center.Y - 20),
+                    15.0,
                     BoldTypeface,
                     new SolidColorBrush(_palette.TextPrimary));
 
@@ -1810,16 +1815,16 @@ public class PieMenuCanvas : FrameworkElement
                 DrawCenteredText(
                     dc,
                     modeShort,
-                    new System.Windows.Point(center.X, center.Y + 4),
+                    new System.Windows.Point(center.X, center.Y),
                     12.5,
                     BoldTypeface,
-                    new SolidColorBrush(_palette.TextPrimary));
+                    new SolidColorBrush(_palette.Accent));
 
                 DrawCenteredText(
                     dc,
                     "中央クリックで閉じる",
-                    new System.Windows.Point(center.X, center.Y + 22),
-                    10.8,
+                    new System.Windows.Point(center.X, center.Y + 20),
+                    10.2,
                     UiTypeface,
                     new SolidColorBrush(_palette.TextSecondary));
             }
