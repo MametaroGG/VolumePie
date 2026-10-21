@@ -703,64 +703,6 @@ public partial class PieOverlayWindow : Window
             BtnOutputDevice_Click(sender, e);
             e.Handled = true;
         }
-        else if (e.Key == Key.Tab)
-        {
-            CycleSliderMode();
-            e.Handled = true;
-        }
-        else if (e.Key is Key.D1 or Key.NumPad1)
-        {
-            SetSliderMode(PieSliderMode.RadialGauge);
-            e.Handled = true;
-        }
-        else if (e.Key is Key.D2 or Key.NumPad2)
-        {
-            SetSliderMode(PieSliderMode.RotaryDial);
-            e.Handled = true;
-        }
-        else if (e.Key is Key.D3 or Key.NumPad3)
-        {
-            SetSliderMode(PieSliderMode.OuterArcExpand);
-            e.Handled = true;
-        }
-        else if (e.Key == Key.Space)
-        {
-            ToggleDirectHoverAdjust();
-            e.Handled = true;
-        }
-    }
-
-    private void CycleSliderMode()
-    {
-        var current = _settingsService.Current.SliderMode;
-        var next = current switch
-        {
-            PieSliderMode.RadialGauge => PieSliderMode.RotaryDial,
-            PieSliderMode.RotaryDial => PieSliderMode.OuterArcExpand,
-            PieSliderMode.OuterArcExpand => PieSliderMode.RadialGauge,
-            _ => PieSliderMode.RadialGauge
-        };
-        SetSliderMode(next);
-    }
-
-    private void SetSliderMode(PieSliderMode mode)
-    {
-        var currentSettings = _settingsService.Current;
-        if (currentSettings.SliderMode == mode && PieCanvas.SliderMode == mode) return;
-
-        currentSettings.SliderMode = mode;
-        PieCanvas.SliderMode = mode;
-        _settingsService.Save(currentSettings);
-        PieCanvas.InvalidateVisual();
-    }
-
-    private void ToggleDirectHoverAdjust()
-    {
-        var currentSettings = _settingsService.Current;
-        currentSettings.DirectHoverAdjust = !currentSettings.DirectHoverAdjust;
-        PieCanvas.DirectHoverAdjust = currentSettings.DirectHoverAdjust;
-        _settingsService.Save(currentSettings);
-        PieCanvas.InvalidateVisual();
     }
 
     private void Window_Deactivated(object? sender, EventArgs e)
