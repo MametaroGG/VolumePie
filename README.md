@@ -36,7 +36,7 @@ Windows のマスター音量、アプリ別音量ミキサー、マイク入力
 
 ## ダウンロード・インストール
 
-1. [Releases ページ](https://github.com/MametaroGG/VolumePie/releases) から最新のインストーラー（`VolumePie-Setup-1.0.0.exe`）をダウンロードします。
+1. [Releases ページ](https://github.com/MametaroGG/VolumePie/releases) から最新のインストーラー（`VolumePie-Setup-1.0.1.exe`）をダウンロードします。
 2. ダウンロードしたインストーラーを実行し、画面の指示に従ってインストールを完了してください。
 3. インストール完了後、スタートメニューやデスクトップのショートカットから VolumePie を起動できます（タスクトレイに常駐します）。
 
@@ -50,5 +50,5 @@ PowerShell で以下のスクリプトを実行すると、自己完結バイナ
 ```
 
 - 実行ファイル出力先: `publish\VolumePie.exe`
-- インストーラー出力先: `dist\VolumePie-Setup-1.0.0.exe`
+- インストーラー出力先: `dist\VolumePie-Setup-1.0.1.exe`
 </details>

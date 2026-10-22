@@ -1,6 +1,6 @@
 ﻿; VolumePie Inno Setup Installer Script
 #define MyAppName "VolumePie"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "VolumePie Project"
 #define MyAppExeName "VolumePie.exe"
 #define PublishDir "..\publish"
