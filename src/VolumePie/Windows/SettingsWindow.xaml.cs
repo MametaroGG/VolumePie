@@ -984,6 +984,7 @@ public partial class SettingsWindow : Window
 
         if (_isRecordingHotkey)
         {
+            BtnRecordHotkey.Focus();
             BtnRecordHotkey.Content = LocalizationService.Get("Loc_HotkeyRecording");
         }
         else
@@ -1019,18 +1020,31 @@ public partial class SettingsWindow : Window
         }
 
         uint mods = 0;
-        if ((Keyboard.Modifiers & ModifierKeys.Alt) != 0) mods |= 1;
-        if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) mods |= 2;
-        if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) mods |= 4;
-        if ((Keyboard.Modifiers & ModifierKeys.Windows) != 0) mods |= 8;
+        if ((Keyboard.Modifiers & ModifierKeys.Alt) != 0 || (GetAsyncKeyState(0x12) & 0x8000) != 0) mods |= 1;
+        if ((Keyboard.Modifiers & ModifierKeys.Control) != 0 || (GetAsyncKeyState(0x11) & 0x8000) != 0) mods |= 2;
+        if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0 || (GetAsyncKeyState(0x10) & 0x8000) != 0) mods |= 4;
+        if ((Keyboard.Modifiers & ModifierKeys.Windows) != 0 || (GetAsyncKeyState(0x5B) & 0x8000) != 0 || (GetAsyncKeyState(0x5C) & 0x8000) != 0) mods |= 8;
 
-        int vk = KeyInterop.VirtualKeyFromKey(key);
+        int vk = 0;
+        if (key == Key.ImeProcessed)
+        {
+            var helper = new WindowInteropHelper(this);
+            if (helper.Handle != IntPtr.Zero)
+            {
+                vk = ImmGetVirtualKey(helper.Handle);
+            }
+        }
+        if (vk <= 0)
+        {
+            vk = KeyInterop.VirtualKeyFromKey(key);
+        }
         if (vk > 0)
         {
             _workingCopy.HotkeyModifiers = mods;
             _workingCopy.HotkeyVirtualKey = vk;
             _workingCopy.EnableKeyboardShortcut = true;
             ChkEnableHotkey.IsChecked = true;
+            _settingsService.Save(_workingCopy.Clone());
         }
 
         RestoreHotkeyButtonAppearance();
@@ -1086,6 +1100,7 @@ public partial class SettingsWindow : Window
         _workingCopy.MouseTrigger = (MouseTriggerType)Math.Clamp(CmbMouseTrigger.SelectedIndex, 0, 4);
         _workingCopy.TriggerBehavior = (TriggerBehaviorMode)Math.Clamp(CmbTriggerBehavior.SelectedIndex, 0, 2);
         _workingCopy.EnableSoftwareDimmerFallback = ChkSoftwareDimmer.IsChecked == true;
+        BtnRecordHotkey.Content = _workingCopy.GetHotkeyDisplayText();
         _settingsService.Save(_workingCopy.Clone());
     }
 
@@ -1130,6 +1145,12 @@ public partial class SettingsWindow : Window
     }
 
     #region DWM Window Title Bar Dark Mode
+    [DllImport("imm32.dll")]
+    private static extern int ImmGetVirtualKey(IntPtr hwnd);
+
+    [DllImport("user32.dll")]
+    private static extern short GetAsyncKeyState(int vKey);
+
     [DllImport("dwmapi.dll", PreserveSig = true)]
     private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 

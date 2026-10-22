@@ -36,7 +36,7 @@ VolumePie는 Windows 마우스 커서 위치에서 시스템 마스터 볼륨, �
 
 ## 다운로드 및 설치
 
-1. [Releases 페이지](https://github.com/MametaroGG/VolumePie/releases)에서 최신 설치 프로그램(`VolumePie-Setup-1.0.1.exe`)을 다운로드합니다.
+1. [Releases 페이지](https://github.com/MametaroGG/VolumePie/releases)에서 최신 설치 프로그램(`VolumePie-Setup-1.0.2.exe`)을 다운로드합니다.
 2. 다운로드한 설치 프로그램을 실행하고 화면의 안내에 따라 설치를 완료합니다.
 3. 설치가 완료되면 시작 메뉴 또는 바탕 화면 바로 가기를 통해 VolumePie를 실행할 수 있습니다 (기본적으로 시스템 트레이에 상주합니다).
 
@@ -50,5 +50,5 @@ VolumePie는 Windows 마우스 커서 위치에서 시스템 마스터 볼륨, �
 ```
 
 - 실행 파일 출력 위치: `publish\VolumePie.exe`
-- 설치 프로그램 출력 위치: `dist\VolumePie-Setup-1.0.1.exe`
+- 설치 프로그램 출력 위치: `dist\VolumePie-Setup-1.0.2.exe`
 </details>

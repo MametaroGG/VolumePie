@@ -11,7 +11,7 @@
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <AssemblyName>VolumePie</AssemblyName>
     <RootNamespace>VolumePie</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Title>VolumePie - Radial Audio &amp; Brightness Mixer</Title>
     <Company>VolumePie</Company>
     <Product>VolumePie</Product>

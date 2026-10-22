@@ -800,6 +800,14 @@ public partial class PieOverlayWindow : Window
 
     private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
+        // Suppress system/menu keys (Alt, F10) from activating WPF menu mode or access key search
+        // to prevent Windows from toggling the cursor or hiding the pointer during keyboard holds
+        if (e.Key == Key.System || e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt || e.SystemKey == Key.F10)
+        {
+            e.Handled = true;
+            return;
+        }
+
         if (e.Key == Key.Escape)
         {
             if (DateTime.UtcNow < _suppressDeactivateAndEscapeUntilUtc)
@@ -826,17 +834,17 @@ public partial class PieOverlayWindow : Window
             HideOverlay();
             e.Handled = true;
         }
-        else if (e.Key == Key.O)
+        else if (e.Key == Key.O && Keyboard.Modifiers == ModifierKeys.None)
         {
             BtnOutputDevice_Click(sender, e);
             e.Handled = true;
         }
-        else if (e.Key == Key.I)
+        else if (e.Key == Key.I && Keyboard.Modifiers == ModifierKeys.None)
         {
             BtnInputDevice_Click(sender, e);
             e.Handled = true;
         }
-        else if (e.Key == Key.D)
+        else if (e.Key == Key.D && Keyboard.Modifiers == ModifierKeys.None)
         {
             if (DevicePopupBorder.Visibility == Visibility.Visible)
             {
@@ -847,6 +855,14 @@ public partial class PieOverlayWindow : Window
             {
                 BtnOutputDevice_Click(sender, e);
             }
+            e.Handled = true;
+        }
+    }
+
+    private void Window_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == Key.System || e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt || e.SystemKey == Key.F10)
+        {
             e.Handled = true;
         }
     }

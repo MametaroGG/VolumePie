@@ -36,7 +36,7 @@ VolumePie 是一款适用于 Windows 的现代化径向滑块饼图（Pie Menu�
 
 ## 下载与安装
 
-1. 从 [Releases 页面](https://github.com/MametaroGG/VolumePie/releases) 下载最新安装包（`VolumePie-Setup-1.0.1.exe`）。
+1. 从 [Releases 页面](https://github.com/MametaroGG/VolumePie/releases) 下载最新安装包（`VolumePie-Setup-1.0.2.exe`）。
 2. 运行下载的安装程序，按照提示完成安装。
 3. 安装完成后，可通过开始菜单或桌面快捷方式启动 VolumePie（默认常驻系统托盘）。
 
@@ -50,5 +50,5 @@ VolumePie 是一款适用于 Windows 的现代化径向滑块饼图（Pie Menu�
 ```
 
 - 编译二进制输出目录: `publish\VolumePie.exe`
-- 安装包输出路径: `dist\VolumePie-Setup-1.0.1.exe`
+- 安装包输出路径: `dist\VolumePie-Setup-1.0.2.exe`
 </details>

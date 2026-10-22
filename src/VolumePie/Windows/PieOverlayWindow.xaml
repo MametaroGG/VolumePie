@@ -18,7 +18,9 @@
         SnapsToDevicePixels="True"
         UseLayoutRounding="True"
         FocusVisualStyle="{x:Null}"
+        Cursor="Hand"
         PreviewKeyDown="Window_PreviewKeyDown"
+        PreviewKeyUp="Window_PreviewKeyUp"
         Deactivated="Window_Deactivated">
 
     <Window.Resources>

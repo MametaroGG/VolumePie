@@ -54,4 +54,4 @@ if ($LASTEXITCODE -ne 0) {
 New-Item -ItemType Directory -Force -Path "dist" | Out-Null
 Copy-Item -Path "$tempDist\*" -Destination "dist" -Force
 
-Write-Host "=== Done! Installer created in .\dist\VolumePie-Setup-1.0.1.exe ===" -ForegroundColor Green
+Write-Host "=== Done! Installer created in .\dist\VolumePie-Setup-1.0.2.exe ===" -ForegroundColor Green

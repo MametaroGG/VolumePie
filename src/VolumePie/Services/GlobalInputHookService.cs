@@ -48,6 +48,7 @@ public class GlobalInputHookService : IDisposable
     public void UpdateSettings(AppSettings settings)
     {
         _settings = settings;
+        _isHotkeyHeld = false;
         _holdTimer.Interval = TimeSpan.FromMilliseconds(Math.Clamp(_settings.MouseHoldDelayMs, 80, 1000));
     }
 
@@ -107,16 +108,22 @@ public class GlobalInputHookService : IDisposable
 
             if (isKeyDown && vkCode == _settings.HotkeyVirtualKey)
             {
+                if (_isHotkeyHeld)
+                {
+                    // While the hotkey is held, ALWAYS suppress auto-repeat keydown events.
+                    // Passing repeated hotkey down events into Windows causes cursor jitter/flicker
+                    // ("Hide pointer while typing") and triggers unwanted menu mode / accelerator handling.
+                    return (IntPtr)1;
+                }
+
                 if (AreConfiguredModifiersPressed(_settings.HotkeyModifiers))
                 {
-                    if (!_isHotkeyHeld)
+                    _isHotkeyHeld = true;
+                    System.Windows.Application.Current?.Dispatcher.BeginInvoke(() =>
                     {
-                        _isHotkeyHeld = true;
-                        System.Windows.Application.Current?.Dispatcher.BeginInvoke(() =>
-                        {
-                            TriggerActivated?.Invoke(false);
-                        });
-                    }
+                        TriggerActivated?.Invoke(false);
+                    });
+
                     if (!_settings.PassThroughKeyboardShortcut)
                     {
                         // Suppress key event so it doesn't type into active window
@@ -133,6 +140,11 @@ public class GlobalInputHookService : IDisposable
                     {
                         TriggerReleased?.Invoke(false);
                     });
+
+                    if (vkCode == _settings.HotkeyVirtualKey && !_settings.PassThroughKeyboardShortcut)
+                    {
+                        return (IntPtr)1;
+                    }
                 }
             }
         }

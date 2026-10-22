@@ -36,7 +36,7 @@ VolumePie 是一款專為 Windows 打造的現代化放射狀滑桿圓環（Pie 
 
 ## 下載與安裝
 
-1. 從 [Releases 頁面](https://github.com/MametaroGG/VolumePie/releases) 下載最新安裝檔（`VolumePie-Setup-1.0.1.exe`）。
+1. 從 [Releases 頁面](https://github.com/MametaroGG/VolumePie/releases) 下載最新安裝檔（`VolumePie-Setup-1.0.2.exe`）。
 2. 執行下載的安裝程式，並依照畫面指示完成安裝。
 3. 安裝完成後，可透過開始功能表或桌面捷徑啟動 VolumePie（預設常駐於系統匣）。
 
@@ -50,5 +50,5 @@ VolumePie 是一款專為 Windows 打造的現代化放射狀滑桿圓環（Pie 
 ```
 
 - 編譯二進位輸出目錄: `publish\VolumePie.exe`
-- 安裝包輸出路徑: `dist\VolumePie-Setup-1.0.1.exe`
+- 安裝包輸出路徑: `dist\VolumePie-Setup-1.0.2.exe`
 </details>

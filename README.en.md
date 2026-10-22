@@ -36,7 +36,7 @@ You can switch between three unique slider interaction styles anytime in the Set
 
 ## Download & Installation
 
-1. Download the latest installer (`VolumePie-Setup-1.0.1.exe`) from the [Releases Page](https://github.com/MametaroGG/VolumePie/releases).
+1. Download the latest installer (`VolumePie-Setup-1.0.2.exe`) from the [Releases Page](https://github.com/MametaroGG/VolumePie/releases).
 2. Run the downloaded setup file and follow the on-screen instructions.
 3. Once installed, launch VolumePie from your Start Menu or desktop shortcut (it minimizes to the task tray automatically).
 
@@ -50,5 +50,5 @@ Clone the repository and run the PowerShell build script to publish a self-conta
 ```
 
 - Application output: `publish\VolumePie.exe`
-- Installer output: `dist\VolumePie-Setup-1.0.1.exe`
+- Installer output: `dist\VolumePie-Setup-1.0.2.exe`
 </details>

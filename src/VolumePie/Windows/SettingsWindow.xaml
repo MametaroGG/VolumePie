@@ -1802,7 +1802,8 @@
 
                                                 FontSize="13"
 
-                                                Cursor="Hand"/>
+                                                Cursor="Hand"
+                                                InputMethod.IsInputMethodEnabled="False"/>
 
                                     </Grid>
 
