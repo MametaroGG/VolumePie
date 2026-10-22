@@ -29,6 +29,7 @@ public class PieItem
 
     public string? CustomDisplayValue { get; set; }
     public bool IsActivePlaying { get; set; }
+    public bool IsHeadphones { get; set; }
     public bool IsMuted { get; set; }
     public bool CanMute { get; set; } = true;
     public ImageSource? AppIcon { get; set; }

@@ -916,7 +916,11 @@
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
-                        <TextBlock Text="🌐" FontSize="13" Margin="8,0,4,0" VerticalAlignment="Center"/>
+                        <controls:VectorIcon Kind="Globe"
+                                             Size="14"
+                                             Foreground="{DynamicResource TextSecondaryBrush}"
+                                             Margin="8,0,4,0"
+                                             VerticalAlignment="Center"/>
 
                         <ComboBox x:Name="CmbLanguageHeader"
 

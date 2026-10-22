@@ -1410,7 +1410,14 @@ public class PieMenuCanvas : FrameworkElement
             switch (item.Category)
             {
                 case PieItemCategory.MasterVolume:
-                    DrawMasterVolumeVectorIcon(dc, iconCenter, iconSize, iconBrush, item.IsMuted);
+                    if (item.IsHeadphones)
+                    {
+                        VectorIcon.DrawHeadphones(dc, iconCenter, iconSize, iconBrush);
+                    }
+                    else
+                    {
+                        DrawMasterVolumeVectorIcon(dc, iconCenter, iconSize, iconBrush, item.IsMuted);
+                    }
                     break;
                 case PieItemCategory.Brightness:
                     DrawBrightnessVectorIcon(dc, iconCenter, iconSize, iconBrush);
@@ -1688,7 +1695,7 @@ public class PieMenuCanvas : FrameworkElement
 
                 DrawCenteredText(
                     dc,
-                    activeItem.CustomDisplayValue ?? "一覧 ▶",
+                    activeItem.CustomDisplayValue ?? LocalizationService.Get("Loc_PieAppsListBadge"),
                     new System.Windows.Point(center.X, center.Y + 1),
                     19.0,
                     BoldTypeface,
@@ -1696,7 +1703,7 @@ public class PieMenuCanvas : FrameworkElement
 
                 DrawCenteredText(
                     dc,
-                    "クリックして一覧表示",
+                    LocalizationService.Get("Loc_PieClickToOpenApps"),
                     new System.Windows.Point(center.X, center.Y + 22),
                     10.8,
                     UiTypeface,
@@ -1787,7 +1794,7 @@ public class PieMenuCanvas : FrameworkElement
 
                 DrawCenteredText(
                     dc,
-                    "クリックでメインへ",
+                    LocalizationService.Get("Loc_PieClickToReturnMain"),
                     new System.Windows.Point(center.X, center.Y + 22),
                     10.8,
                     UiTypeface,
@@ -1805,9 +1812,9 @@ public class PieMenuCanvas : FrameworkElement
 
                 string modeShort = _sliderMode switch
                 {
-                    PieSliderMode.RadialGauge => "ラジアル型",
-                    PieSliderMode.RotaryDial => "ダイヤル型",
-                    PieSliderMode.OuterArcExpand => "外周アーク型",
+                    PieSliderMode.RadialGauge => LocalizationService.Get("Loc_ModeRadial"),
+                    PieSliderMode.RotaryDial => LocalizationService.Get("Loc_ModeRotary"),
+                    PieSliderMode.OuterArcExpand => LocalizationService.Get("Loc_ModeArc"),
                     _ => ""
                 };
 

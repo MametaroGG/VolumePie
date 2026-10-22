@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using VolumePie.Controls;
 using VolumePie.Models;
 
 namespace VolumePie.Services;
@@ -31,6 +32,10 @@ public sealed class AudioDeviceInfo
         Name.Contains("Headphone", StringComparison.OrdinalIgnoreCase) ||
         Name.Contains("Headset", StringComparison.OrdinalIgnoreCase) ||
         Name.Contains("Earphone", StringComparison.OrdinalIgnoreCase);
+    public VectorIconKind IconKind =>
+        DeviceType == AudioDeviceType.Input
+            ? VectorIconKind.Microphone
+            : (IsHeadphones ? VectorIconKind.Headphones : VectorIconKind.Speaker);
     public string Icon =>
         DeviceType == AudioDeviceType.Input
             ? "🎤"

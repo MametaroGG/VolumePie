@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using VolumePie.Controls;
 using VolumePie.Models;
 using VolumePie.Services;
 
@@ -242,12 +243,12 @@ public partial class PieOverlayWindow : Window
         var activeOut = _cachedOutputDevices.FirstOrDefault(d => d.IsDefault) ?? _cachedOutputDevices.FirstOrDefault();
         if (activeOut != null)
         {
-            TxtOutputDeviceIcon.Text = activeOut.IsHeadphones ? "🎧" : "🔊";
+            IconOutputDevice.Kind = activeOut.IsHeadphones ? VectorIconKind.Headphones : VectorIconKind.Speaker;
             TxtOutputDeviceName.Text = activeOut.Name;
         }
         else
         {
-            TxtOutputDeviceIcon.Text = "🔊";
+            IconOutputDevice.Kind = VectorIconKind.Speaker;
             TxtOutputDeviceName.Text = LocalizationService.Get("Loc_PreviewItemSpeakerOutput");
         }
 
@@ -255,12 +256,12 @@ public partial class PieOverlayWindow : Window
         var activeIn = _cachedInputDevices.FirstOrDefault(d => d.IsDefault) ?? _cachedInputDevices.FirstOrDefault();
         if (activeIn != null)
         {
-            TxtInputDeviceIcon.Text = "🎤";
+            IconInputDevice.Kind = VectorIconKind.Microphone;
             TxtInputDeviceName.Text = activeIn.Name;
         }
         else
         {
-            TxtInputDeviceIcon.Text = "🎤";
+            IconInputDevice.Kind = VectorIconKind.Microphone;
             TxtInputDeviceName.Text = LocalizationService.Get("Loc_PieMicInput");
         }
 
@@ -271,13 +272,13 @@ public partial class PieOverlayWindow : Window
     {
         if (DevicePopupBorder.Visibility == Visibility.Visible)
         {
-            TxtOutputDeviceChevron.Text = _activeDeviceTab == AudioDeviceType.Output ? "▴" : "▾";
-            TxtInputDeviceChevron.Text = _activeDeviceTab == AudioDeviceType.Input ? "▴" : "▾";
+            ChevronOutputDevice.Kind = _activeDeviceTab == AudioDeviceType.Output ? VectorIconKind.ChevronUp : VectorIconKind.ChevronDown;
+            ChevronInputDevice.Kind = _activeDeviceTab == AudioDeviceType.Input ? VectorIconKind.ChevronUp : VectorIconKind.ChevronDown;
         }
         else
         {
-            TxtOutputDeviceChevron.Text = "▾";
-            TxtInputDeviceChevron.Text = "▾";
+            ChevronOutputDevice.Kind = VectorIconKind.ChevronDown;
+            ChevronInputDevice.Kind = VectorIconKind.ChevronDown;
         }
     }
 
@@ -290,10 +291,12 @@ public partial class PieOverlayWindow : Window
         BtnPopupTabOutput.Background = new SolidColorBrush(isOutput ? palette.ButtonActiveBg : Colors.Transparent);
         BtnPopupTabOutput.BorderBrush = new SolidColorBrush(isOutput ? palette.GaugeLeadingEdge : palette.CardBorder);
         TxtPopupTabOutputLabel.Foreground = new SolidColorBrush(isOutput ? palette.ButtonActiveText : palette.TextSecondary);
+        IconPopupTabOutput.Foreground = new SolidColorBrush(isOutput ? palette.ButtonActiveText : palette.TextSecondary);
 
         BtnPopupTabInput.Background = new SolidColorBrush(!isOutput ? palette.ButtonActiveBg : Colors.Transparent);
         BtnPopupTabInput.BorderBrush = new SolidColorBrush(!isOutput ? palette.GaugeLeadingEdge : palette.CardBorder);
         TxtPopupTabInputLabel.Foreground = new SolidColorBrush(!isOutput ? palette.ButtonActiveText : palette.TextSecondary);
+        IconPopupTabInput.Foreground = new SolidColorBrush(!isOutput ? palette.ButtonActiveText : palette.TextSecondary);
 
         var devices = isOutput ? _audioService.GetOutputDevices() : _audioService.GetInputDevices();
         if (isOutput) _cachedOutputDevices = devices;
@@ -328,8 +331,9 @@ public partial class PieOverlayWindow : Window
 
             var rowGrid = new Grid();
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(10) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(26) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(28) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
 
             var indicator = new Border
             {
@@ -343,15 +347,16 @@ public partial class PieOverlayWindow : Window
             Grid.SetColumn(indicator, 0);
             rowGrid.Children.Add(indicator);
 
-            var iconTxt = new TextBlock
+            var devVectorIcon = new VectorIcon
             {
-                Text = dev.Icon,
-                FontSize = 13.5,
+                Kind = dev.IsHeadphones ? VectorIconKind.Headphones : (dev.DeviceType == AudioDeviceType.Input ? VectorIconKind.Microphone : VectorIconKind.Speaker),
+                Size = 15,
                 VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
                 Foreground = new SolidColorBrush(isSelected ? palette.TextPrimary : palette.TextSecondary)
             };
-            Grid.SetColumn(iconTxt, 1);
-            rowGrid.Children.Add(iconTxt);
+            Grid.SetColumn(devVectorIcon, 1);
+            rowGrid.Children.Add(devVectorIcon);
 
             var nameTxt = new TextBlock
             {
@@ -365,6 +370,20 @@ public partial class PieOverlayWindow : Window
             };
             Grid.SetColumn(nameTxt, 2);
             rowGrid.Children.Add(nameTxt);
+
+            if (isSelected)
+            {
+                var checkIcon = new VectorIcon
+                {
+                    Kind = VectorIconKind.Checkmark,
+                    Size = 13,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                    Foreground = new SolidColorBrush(palette.GaugeLeadingEdge)
+                };
+                Grid.SetColumn(checkIcon, 3);
+                rowGrid.Children.Add(checkIcon);
+            }
 
             rowBorder.Child = rowGrid;
 
@@ -525,12 +544,14 @@ public partial class PieOverlayWindow : Window
             if (s.IncludeMasterVolume)
             {
                 var (vol, muted, _) = _audioService.GetMasterOutputState();
+                var activeOut = _cachedOutputDevices.FirstOrDefault(d => d.IsDefault) ?? _cachedOutputDevices.FirstOrDefault();
                 items.Add(new PieItem
                 {
                     Id = "master_vol",
                     Title = LocalizationService.Get("Loc_PieMasterVolume"),
                     Subtitle = TxtOutputDeviceName.Text,
                     Category = PieItemCategory.MasterVolume,
+                    IsHeadphones = activeOut?.IsHeadphones ?? false,
                     Value = vol,
                     IsMuted = muted,
                     CanMute = true,
@@ -702,23 +723,26 @@ public partial class PieOverlayWindow : Window
         // Top Output Device Switcher Bar
         TopOutputDeviceBarBorder.Background = new SolidColorBrush(palette.SliceBgSelected);
         TopOutputDeviceBarBorder.BorderBrush = new SolidColorBrush(palette.CardBorder);
-        TxtOutputDeviceIcon.Foreground = new SolidColorBrush(palette.TextPrimary);
+        IconOutputDevice.Foreground = new SolidColorBrush(palette.TextPrimary);
         TxtOutputDeviceLabel.Foreground = new SolidColorBrush(palette.TextSecondary);
         TxtOutputDeviceName.Foreground = new SolidColorBrush(palette.TextPrimary);
-        TxtOutputDeviceChevron.Foreground = new SolidColorBrush(palette.TextSecondary);
+        ChevronOutputDevice.Foreground = new SolidColorBrush(palette.TextSecondary);
 
         // Top Input Device Switcher Bar
         TopInputDeviceBarBorder.Background = new SolidColorBrush(palette.SliceBgSelected);
         TopInputDeviceBarBorder.BorderBrush = new SolidColorBrush(palette.CardBorder);
-        TxtInputDeviceIcon.Foreground = new SolidColorBrush(palette.TextPrimary);
+        IconInputDevice.Foreground = new SolidColorBrush(palette.TextPrimary);
         TxtInputDeviceLabel.Foreground = new SolidColorBrush(palette.TextSecondary);
         TxtInputDeviceName.Foreground = new SolidColorBrush(palette.TextPrimary);
-        TxtInputDeviceChevron.Foreground = new SolidColorBrush(palette.TextSecondary);
+        ChevronInputDevice.Foreground = new SolidColorBrush(palette.TextSecondary);
 
         // Device Popup Card
         DevicePopupBorder.Background = new SolidColorBrush(palette.WindowBg);
         DevicePopupBorder.BorderBrush = new SolidColorBrush(palette.SliceBorderSelected);
         TxtDevicePopupHint.Foreground = new SolidColorBrush(palette.TextSecondary);
+
+        IconPopupTabOutput.Foreground = new SolidColorBrush(_activeDeviceTab == AudioDeviceType.Output ? palette.ButtonActiveText : palette.TextSecondary);
+        IconPopupTabInput.Foreground = new SolidColorBrush(_activeDeviceTab == AudioDeviceType.Input ? palette.ButtonActiveText : palette.TextSecondary);
 
         if (DevicePopupBorder.Visibility == Visibility.Visible)
         {
