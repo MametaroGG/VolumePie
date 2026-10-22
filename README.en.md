@@ -22,7 +22,7 @@ You can switch between three unique slider interaction styles anytime in the Set
 > **Tips & Tricks**
 > - **Slider Drag**: Drag directly on a slice for smooth, real-time 1% precision adjustment.
 > - **Mouse Scroll Wheel**: Hover over any slice and scroll to adjust quickly (default: 3% steps, customizable from 1% to 10% in settings). Hold `Shift` or `Ctrl` while scrolling for **1% ultra-fine precision mode**.
-> - **Audio Device Switcher**: Click the top pill, scroll the wheel on it, or press `D` / `O` on your keyboard to instantly switch playback output devices.
+> - **Input & Output Device Switcher**: Click the top pills, scroll the wheel over them, or press `O` (output) / `I` (input) / `D` on your keyboard to instantly switch playback or recording devices. You can also switch them directly from the task tray menu.
 > - **Close Menu**: Press `Esc`, right-click anywhere, or click the center hub to close immediately.
 
 ## Activation Triggers

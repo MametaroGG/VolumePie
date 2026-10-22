@@ -20,7 +20,9 @@ public partial class PieOverlayWindow : Window
     private readonly AudioMixerService _audioService;
     private readonly BrightnessService _brightnessService;
     private readonly Action _openSettingsAction;
-    private List<AudioOutputDeviceInfo> _cachedDevices = new();
+    private List<AudioDeviceInfo> _cachedOutputDevices = new();
+    private List<AudioDeviceInfo> _cachedInputDevices = new();
+    private AudioDeviceType _activeDeviceTab = AudioDeviceType.Output;
     private DateTime _suppressDeactivateAndEscapeUntilUtc = DateTime.MinValue;
     private DateTime _shownAtUtc = DateTime.MinValue;
     private const double SmartHoldThresholdMs = 400.0;
@@ -58,7 +60,7 @@ public partial class PieOverlayWindow : Window
         {
             Dispatcher.Invoke(() =>
             {
-                RefreshOutputDeviceBar();
+                RefreshDeviceBars();
                 RefreshPieItems();
                 PieCanvas.InvalidateVisual();
             });
@@ -138,8 +140,8 @@ public partial class PieOverlayWindow : Window
     {
         _currentPage = PiePage.Main;
         PieCanvas.IsInSubPage = false;
-        OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
-        RefreshOutputDeviceBar();
+        DevicePopupBorder.Visibility = Visibility.Collapsed;
+        RefreshDeviceBars();
         RefreshPieItems();
         ApplySettingsToUi(_settingsService.Current);
 
@@ -170,7 +172,8 @@ public partial class PieOverlayWindow : Window
     {
         _currentPage = PiePage.Main;
         PieCanvas.IsInSubPage = false;
-        OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
+        DevicePopupBorder.Visibility = Visibility.Collapsed;
+        UpdateDeviceChevrons();
         PieCanvas.IsTriggerHeld = false;
         PieCanvas.CancelDragAndReleaseCapture();
         Mouse.Capture(null);
@@ -203,22 +206,22 @@ public partial class PieOverlayWindow : Window
         double localX = relX / s;
         double localY = relY / s;
 
-        // Top output device switcher bar (Y in [4..52], X in [40..560])
-        if (localY >= 4 && localY <= 52 && localX >= 40 && localX <= 560)
+        // Top device switcher bars (Y in [4..52], X in [30..570])
+        if (localY >= 4 && localY <= 52 && localX >= 30 && localX <= 570)
         {
             return;
         }
 
-        // If output device popup is visible, allow clicks inside its bounds (X in [105..495], Y in [48..400])
-        if (OutputDevicePopupBorder.Visibility == Visibility.Visible)
+        // If audio device popup is visible, allow clicks inside its bounds (X in [90..510], Y in [44..420])
+        if (DevicePopupBorder.Visibility == Visibility.Visible)
         {
-            if (localX >= 105 && localX <= 495 && localY >= 48 && localY <= 400)
+            if (localX >= 90 && localX <= 510 && localY >= 44 && localY <= 420)
             {
                 return;
             }
             // Clicked outside popup: collapse popup first
-            OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
-            UpdateOutputDeviceChevron();
+            DevicePopupBorder.Visibility = Visibility.Collapsed;
+            UpdateDeviceChevrons();
             return;
         }
 
@@ -233,56 +236,89 @@ public partial class PieOverlayWindow : Window
         }
     }
 
-    private void RefreshOutputDeviceBar()
+    private void RefreshDeviceBars()
     {
-        _cachedDevices = _audioService.GetOutputDevices();
-        var active = _cachedDevices.FirstOrDefault(d => d.IsDefault) ?? _cachedDevices.FirstOrDefault();
-
-        if (active != null)
+        _cachedOutputDevices = _audioService.GetOutputDevices();
+        var activeOut = _cachedOutputDevices.FirstOrDefault(d => d.IsDefault) ?? _cachedOutputDevices.FirstOrDefault();
+        if (activeOut != null)
         {
-            TxtOutputDeviceIcon.Text = active.IsHeadphones ? "🎧" : "🔊";
-            TxtOutputDeviceName.Text = active.Name;
+            TxtOutputDeviceIcon.Text = activeOut.IsHeadphones ? "🎧" : "🔊";
+            TxtOutputDeviceName.Text = activeOut.Name;
         }
         else
         {
             TxtOutputDeviceIcon.Text = "🔊";
-            TxtOutputDeviceName.Text = "既定の出力デバイス";
+            TxtOutputDeviceName.Text = LocalizationService.Get("Loc_PreviewItemSpeakerOutput");
         }
 
-        UpdateOutputDeviceChevron();
+        _cachedInputDevices = _audioService.GetInputDevices();
+        var activeIn = _cachedInputDevices.FirstOrDefault(d => d.IsDefault) ?? _cachedInputDevices.FirstOrDefault();
+        if (activeIn != null)
+        {
+            TxtInputDeviceIcon.Text = "🎤";
+            TxtInputDeviceName.Text = activeIn.Name;
+        }
+        else
+        {
+            TxtInputDeviceIcon.Text = "🎤";
+            TxtInputDeviceName.Text = LocalizationService.Get("Loc_PieMicInput");
+        }
+
+        UpdateDeviceChevrons();
     }
 
-    private void UpdateOutputDeviceChevron()
+    private void UpdateDeviceChevrons()
     {
-        TxtOutputDeviceChevron.Text = OutputDevicePopupBorder.Visibility == Visibility.Visible ? "▴" : "▾";
+        if (DevicePopupBorder.Visibility == Visibility.Visible)
+        {
+            TxtOutputDeviceChevron.Text = _activeDeviceTab == AudioDeviceType.Output ? "▴" : "▾";
+            TxtInputDeviceChevron.Text = _activeDeviceTab == AudioDeviceType.Input ? "▴" : "▾";
+        }
+        else
+        {
+            TxtOutputDeviceChevron.Text = "▾";
+            TxtInputDeviceChevron.Text = "▾";
+        }
     }
 
-    private void RebuildOutputDevicePopupList()
+    private void RebuildDevicePopupList()
     {
         var palette = ThemeService.GetPalette(_settingsService.Current.ThemeMode, _settingsService.Current.ColorPreset);
-        OutputDeviceListPanel.Children.Clear();
+        DeviceListPanel.Children.Clear();
 
-        _cachedDevices = _audioService.GetOutputDevices();
-        if (_cachedDevices.Count == 0)
+        bool isOutput = _activeDeviceTab == AudioDeviceType.Output;
+        BtnPopupTabOutput.Background = new SolidColorBrush(isOutput ? palette.ButtonActiveBg : Colors.Transparent);
+        BtnPopupTabOutput.BorderBrush = new SolidColorBrush(isOutput ? palette.GaugeLeadingEdge : palette.CardBorder);
+        TxtPopupTabOutputLabel.Foreground = new SolidColorBrush(isOutput ? palette.ButtonActiveText : palette.TextSecondary);
+
+        BtnPopupTabInput.Background = new SolidColorBrush(!isOutput ? palette.ButtonActiveBg : Colors.Transparent);
+        BtnPopupTabInput.BorderBrush = new SolidColorBrush(!isOutput ? palette.GaugeLeadingEdge : palette.CardBorder);
+        TxtPopupTabInputLabel.Foreground = new SolidColorBrush(!isOutput ? palette.ButtonActiveText : palette.TextSecondary);
+
+        var devices = isOutput ? _audioService.GetOutputDevices() : _audioService.GetInputDevices();
+        if (isOutput) _cachedOutputDevices = devices;
+        else _cachedInputDevices = devices;
+
+        if (devices.Count == 0)
         {
-            OutputDeviceListPanel.Children.Add(new TextBlock
+            DeviceListPanel.Children.Add(new TextBlock
             {
-                Text = "利用可能な出力デバイスが見つかりません",
+                Text = LocalizationService.Get(isOutput ? "Loc_PieNoOutputDevices" : "Loc_PieNoInputDevices"),
                 Foreground = new SolidColorBrush(palette.TextSecondary),
                 FontSize = 12,
-                Margin = new Thickness(8, 6, 8, 6)
+                Margin = new Thickness(8, 8, 8, 8)
             });
             return;
         }
 
-        foreach (var dev in _cachedDevices)
+        foreach (var dev in devices)
         {
             bool isSelected = dev.IsDefault;
 
             var rowBorder = new Border
             {
                 CornerRadius = new CornerRadius(8),
-                Padding = new Thickness(10, 9, 12, 9),
+                Padding = new Thickness(10, 8, 12, 8),
                 Margin = new Thickness(2, 2, 2, 2),
                 Background = new SolidColorBrush(isSelected ? palette.ButtonBg : Colors.Transparent),
                 BorderBrush = new SolidColorBrush(isSelected ? palette.ButtonBorder : Colors.Transparent),
@@ -295,7 +331,6 @@ public partial class PieOverlayWindow : Window
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(26) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            // Windows 11 style left vertical indicator bar for the active output device
             var indicator = new Border
             {
                 Width = 3.5,
@@ -310,8 +345,8 @@ public partial class PieOverlayWindow : Window
 
             var iconTxt = new TextBlock
             {
-                Text = dev.IsHeadphones ? "🎧" : "🔊",
-                FontSize = 14,
+                Text = dev.Icon,
+                FontSize = 13.5,
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = new SolidColorBrush(isSelected ? palette.TextPrimary : palette.TextSecondary)
             };
@@ -350,58 +385,115 @@ public partial class PieOverlayWindow : Window
                 }
             };
 
-            string targetDeviceId = dev.Id;
+            var targetDev = dev;
             rowBorder.MouseLeftButtonDown += (_, args) =>
             {
                 args.Handled = true;
-                SelectOutputDevice(targetDeviceId);
+                SelectDevice(targetDev);
             };
 
-            OutputDeviceListPanel.Children.Add(rowBorder);
+            DeviceListPanel.Children.Add(rowBorder);
         }
     }
 
-    private void SelectOutputDevice(string deviceId)
+    private void SelectDevice(AudioDeviceInfo dev)
     {
-        if (_audioService.SetDefaultOutputDevice(deviceId))
+        bool ok = dev.DeviceType == AudioDeviceType.Input
+            ? _audioService.SetDefaultInputDevice(dev.Id)
+            : _audioService.SetDefaultOutputDevice(dev.Id);
+
+        if (ok)
         {
-            OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
-            RefreshOutputDeviceBar();
+            DevicePopupBorder.Visibility = Visibility.Collapsed;
+            RefreshDeviceBars();
             RefreshPieItems();
         }
     }
 
     private void BtnOutputDevice_Click(object sender, RoutedEventArgs e)
     {
-        if (OutputDevicePopupBorder.Visibility == Visibility.Visible)
+        if (DevicePopupBorder.Visibility == Visibility.Visible && _activeDeviceTab == AudioDeviceType.Output)
         {
-            OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
+            DevicePopupBorder.Visibility = Visibility.Collapsed;
         }
         else
         {
-            RebuildOutputDevicePopupList();
-            OutputDevicePopupBorder.Visibility = Visibility.Visible;
+            _activeDeviceTab = AudioDeviceType.Output;
+            RebuildDevicePopupList();
+            DevicePopupBorder.Visibility = Visibility.Visible;
         }
-        UpdateOutputDeviceChevron();
+        UpdateDeviceChevrons();
         UpdateChromeVisuals(ThemeService.GetPalette(_settingsService.Current.ThemeMode, _settingsService.Current.ColorPreset));
     }
 
-    private void TopDeviceBarBorder_MouseWheel(object sender, MouseWheelEventArgs e)
+    private void BtnInputDevice_Click(object sender, RoutedEventArgs e)
     {
-        _cachedDevices = _audioService.GetOutputDevices();
-        if (_cachedDevices.Count <= 1) return;
+        if (DevicePopupBorder.Visibility == Visibility.Visible && _activeDeviceTab == AudioDeviceType.Input)
+        {
+            DevicePopupBorder.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            _activeDeviceTab = AudioDeviceType.Input;
+            RebuildDevicePopupList();
+            DevicePopupBorder.Visibility = Visibility.Visible;
+        }
+        UpdateDeviceChevrons();
+        UpdateChromeVisuals(ThemeService.GetPalette(_settingsService.Current.ThemeMode, _settingsService.Current.ColorPreset));
+    }
 
-        int curIdx = _cachedDevices.FindIndex(d => d.IsDefault);
+    private void BtnPopupTabOutput_Click(object sender, RoutedEventArgs e)
+    {
+        if (_activeDeviceTab == AudioDeviceType.Output) return;
+        _activeDeviceTab = AudioDeviceType.Output;
+        RebuildDevicePopupList();
+        UpdateDeviceChevrons();
+    }
+
+    private void BtnPopupTabInput_Click(object sender, RoutedEventArgs e)
+    {
+        if (_activeDeviceTab == AudioDeviceType.Input) return;
+        _activeDeviceTab = AudioDeviceType.Input;
+        RebuildDevicePopupList();
+        UpdateDeviceChevrons();
+    }
+
+    private void TopOutputDeviceBarBorder_MouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        _cachedOutputDevices = _audioService.GetOutputDevices();
+        if (_cachedOutputDevices.Count <= 1) return;
+
+        int curIdx = _cachedOutputDevices.FindIndex(d => d.IsDefault);
         if (curIdx < 0) curIdx = 0;
 
         int nextIdx = e.Delta > 0
-            ? (curIdx - 1 + _cachedDevices.Count) % _cachedDevices.Count
-            : (curIdx + 1) % _cachedDevices.Count;
+            ? (curIdx - 1 + _cachedOutputDevices.Count) % _cachedOutputDevices.Count
+            : (curIdx + 1) % _cachedOutputDevices.Count;
 
-        SelectOutputDevice(_cachedDevices[nextIdx].Id);
-        if (OutputDevicePopupBorder.Visibility == Visibility.Visible)
+        SelectDevice(_cachedOutputDevices[nextIdx]);
+        if (DevicePopupBorder.Visibility == Visibility.Visible && _activeDeviceTab == AudioDeviceType.Output)
         {
-            RebuildOutputDevicePopupList();
+            RebuildDevicePopupList();
+        }
+        e.Handled = true;
+    }
+
+    private void TopInputDeviceBarBorder_MouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        _cachedInputDevices = _audioService.GetInputDevices();
+        if (_cachedInputDevices.Count <= 1) return;
+
+        int curIdx = _cachedInputDevices.FindIndex(d => d.IsDefault);
+        if (curIdx < 0) curIdx = 0;
+
+        int nextIdx = e.Delta > 0
+            ? (curIdx - 1 + _cachedInputDevices.Count) % _cachedInputDevices.Count
+            : (curIdx + 1) % _cachedInputDevices.Count;
+
+        SelectDevice(_cachedInputDevices[nextIdx]);
+        if (DevicePopupBorder.Visibility == Visibility.Visible && _activeDeviceTab == AudioDeviceType.Input)
+        {
+            RebuildDevicePopupList();
         }
         e.Handled = true;
     }
@@ -477,7 +569,7 @@ public partial class PieOverlayWindow : Window
                     {
                         Id = "mic_vol",
                         Title = LocalizationService.Get("Loc_PieMicVolume"),
-                        Subtitle = LocalizationService.Get("Loc_PieMicInput"),
+                        Subtitle = TxtInputDeviceName.Text,
                         Category = PieItemCategory.MicVolume,
                         Value = micVol,
                         IsMuted = micMuted,
@@ -608,22 +700,29 @@ public partial class PieOverlayWindow : Window
     private void UpdateChromeVisuals(ThemePalette palette)
     {
         // Top Output Device Switcher Bar
-        TopDeviceBarBorder.Background = new SolidColorBrush(palette.SliceBgSelected);
-        TopDeviceBarBorder.BorderBrush = new SolidColorBrush(palette.CardBorder);
+        TopOutputDeviceBarBorder.Background = new SolidColorBrush(palette.SliceBgSelected);
+        TopOutputDeviceBarBorder.BorderBrush = new SolidColorBrush(palette.CardBorder);
         TxtOutputDeviceIcon.Foreground = new SolidColorBrush(palette.TextPrimary);
         TxtOutputDeviceLabel.Foreground = new SolidColorBrush(palette.TextSecondary);
         TxtOutputDeviceName.Foreground = new SolidColorBrush(palette.TextPrimary);
         TxtOutputDeviceChevron.Foreground = new SolidColorBrush(palette.TextSecondary);
 
-        // Output Device Popup Card
-        OutputDevicePopupBorder.Background = new SolidColorBrush(palette.WindowBg);
-        OutputDevicePopupBorder.BorderBrush = new SolidColorBrush(palette.SliceBorderSelected);
-        TxtDevicePopupTitle.Foreground = new SolidColorBrush(palette.TextPrimary);
+        // Top Input Device Switcher Bar
+        TopInputDeviceBarBorder.Background = new SolidColorBrush(palette.SliceBgSelected);
+        TopInputDeviceBarBorder.BorderBrush = new SolidColorBrush(palette.CardBorder);
+        TxtInputDeviceIcon.Foreground = new SolidColorBrush(palette.TextPrimary);
+        TxtInputDeviceLabel.Foreground = new SolidColorBrush(palette.TextSecondary);
+        TxtInputDeviceName.Foreground = new SolidColorBrush(palette.TextPrimary);
+        TxtInputDeviceChevron.Foreground = new SolidColorBrush(palette.TextSecondary);
+
+        // Device Popup Card
+        DevicePopupBorder.Background = new SolidColorBrush(palette.WindowBg);
+        DevicePopupBorder.BorderBrush = new SolidColorBrush(palette.SliceBorderSelected);
         TxtDevicePopupHint.Foreground = new SolidColorBrush(palette.TextSecondary);
 
-        if (OutputDevicePopupBorder.Visibility == Visibility.Visible)
+        if (DevicePopupBorder.Visibility == Visibility.Visible)
         {
-            RebuildOutputDevicePopupList();
+            RebuildDevicePopupList();
         }
     }
 
@@ -631,10 +730,10 @@ public partial class PieOverlayWindow : Window
     {
         if (ReferenceEquals(e.OriginalSource, RootGrid))
         {
-            if (OutputDevicePopupBorder.Visibility == Visibility.Visible)
+            if (DevicePopupBorder.Visibility == Visibility.Visible)
             {
-                OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
-                UpdateOutputDeviceChevron();
+                DevicePopupBorder.Visibility = Visibility.Collapsed;
+                UpdateDeviceChevrons();
                 return;
             }
             HideOverlay();
@@ -685,10 +784,10 @@ public partial class PieOverlayWindow : Window
                 return;
             }
 
-            if (OutputDevicePopupBorder.Visibility == Visibility.Visible)
+            if (DevicePopupBorder.Visibility == Visibility.Visible)
             {
-                OutputDevicePopupBorder.Visibility = Visibility.Collapsed;
-                UpdateOutputDeviceChevron();
+                DevicePopupBorder.Visibility = Visibility.Collapsed;
+                UpdateDeviceChevrons();
                 e.Handled = true;
                 return;
             }
@@ -703,9 +802,27 @@ public partial class PieOverlayWindow : Window
             HideOverlay();
             e.Handled = true;
         }
-        else if (e.Key == Key.D || e.Key == Key.O)
+        else if (e.Key == Key.O)
         {
             BtnOutputDevice_Click(sender, e);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.I)
+        {
+            BtnInputDevice_Click(sender, e);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.D)
+        {
+            if (DevicePopupBorder.Visibility == Visibility.Visible)
+            {
+                DevicePopupBorder.Visibility = Visibility.Collapsed;
+                UpdateDeviceChevrons();
+            }
+            else
+            {
+                BtnOutputDevice_Click(sender, e);
+            }
             e.Handled = true;
         }
     }

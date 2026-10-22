@@ -77,7 +77,11 @@ public partial class App : System.Windows.Application
         InitializeTrayIcon();
 
         bool startMinimized = e.Args.Any(a => a.Equals("--minimized", StringComparison.OrdinalIgnoreCase));
-        if (!startMinimized)
+        if (e.Args.Any(a => a.Equals("--show-pie", StringComparison.OrdinalIgnoreCase)))
+        {
+            Dispatcher.BeginInvoke(() => _pieWindow?.ShowAtCursor(isTriggerHeld: false));
+        }
+        else if (!startMinimized)
         {
             ShowSettingsWindow();
         }
@@ -165,9 +169,24 @@ public partial class App : System.Windows.Application
         outputDevSubMenu.DropDown.BackColor = isDark ? System.Drawing.Color.FromArgb(32, 32, 32) : System.Drawing.Color.FromArgb(249, 249, 249);
         ModernContextMenuStrip.ApplySubMenuAttributes(outputDevSubMenu.DropDown, isDark);
 
+        var inputDevSubMenu = new System.Windows.Forms.ToolStripMenuItem(LocalizationService.Get("Loc_TrayInputDevice"))
+        {
+            Padding = new System.Windows.Forms.Padding(12, 6, 12, 6)
+        };
+        if (inputDevSubMenu.DropDown is System.Windows.Forms.ToolStripDropDownMenu ddmInput)
+        {
+            ddmInput.ShowImageMargin = true;
+            ddmInput.ShowCheckMargin = false;
+        }
+        inputDevSubMenu.DropDown.Font = new System.Drawing.Font("Segoe UI", 9.5f);
+        inputDevSubMenu.DropDown.Renderer = menu.Renderer;
+        inputDevSubMenu.DropDown.BackColor = isDark ? System.Drawing.Color.FromArgb(32, 32, 32) : System.Drawing.Color.FromArgb(249, 249, 249);
+        ModernContextMenuStrip.ApplySubMenuAttributes(inputDevSubMenu.DropDown, isDark);
+
         menu.Opening += (_, _) =>
         {
             outputDevSubMenu.DropDownItems.Clear();
+            inputDevSubMenu.DropDownItems.Clear();
             if (_audioService == null) return;
             var devices = _audioService.GetOutputDevices();
             foreach (var dev in devices)
@@ -184,8 +203,25 @@ public partial class App : System.Windows.Application
                 };
                 outputDevSubMenu.DropDownItems.Add(devItem);
             }
+
+            var inDevices = _audioService.GetInputDevices();
+            foreach (var dev in inDevices)
+            {
+                var devItem = new System.Windows.Forms.ToolStripMenuItem(dev.Name)
+                {
+                    Checked = dev.IsDefault,
+                    Padding = new System.Windows.Forms.Padding(8, 6, 12, 6)
+                };
+                string targetId = dev.Id;
+                devItem.Click += (_, _) =>
+                {
+                    _audioService.SetDefaultInputDevice(targetId);
+                };
+                inputDevSubMenu.DropDownItems.Add(devItem);
+            }
         };
         menu.Items.Add(outputDevSubMenu);
+        menu.Items.Add(inputDevSubMenu);
 
         menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 

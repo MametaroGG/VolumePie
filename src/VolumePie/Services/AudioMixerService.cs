@@ -13,6 +13,30 @@ using VolumePie.Models;
 
 namespace VolumePie.Services;
 
+public enum AudioDeviceType
+{
+    Output,
+    Input
+}
+
+public sealed class AudioDeviceInfo
+{
+    public string Id { get; init; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
+    public AudioDeviceType DeviceType { get; init; } = AudioDeviceType.Output;
+    public bool IsDefault { get; init; }
+    public bool IsHeadphones =>
+        Name.Contains("ヘッドホン", StringComparison.OrdinalIgnoreCase) ||
+        Name.Contains("ヘッドセット", StringComparison.OrdinalIgnoreCase) ||
+        Name.Contains("Headphone", StringComparison.OrdinalIgnoreCase) ||
+        Name.Contains("Headset", StringComparison.OrdinalIgnoreCase) ||
+        Name.Contains("Earphone", StringComparison.OrdinalIgnoreCase);
+    public string Icon =>
+        DeviceType == AudioDeviceType.Input
+            ? "🎤"
+            : (IsHeadphones ? "🎧" : "🔊");
+}
+
 public sealed class AudioOutputDeviceInfo
 {
     public string Id { get; init; } = string.Empty;
@@ -30,21 +54,31 @@ public class AudioMixerService
 {
     private static readonly ConcurrentDictionary<string, ImageSource?> IconCache = new(StringComparer.OrdinalIgnoreCase);
 
-    public List<AudioOutputDeviceInfo> GetOutputDevices()
+    public List<AudioDeviceInfo> GetOutputDevices()
     {
-        var list = new List<AudioOutputDeviceInfo>();
+        return GetDevices(EDataFlow.eRender);
+    }
+
+    public List<AudioDeviceInfo> GetInputDevices()
+    {
+        return GetDevices(EDataFlow.eCapture);
+    }
+
+    private List<AudioDeviceInfo> GetDevices(EDataFlow dataFlow)
+    {
+        var list = new List<AudioDeviceInfo>();
         try
         {
             var enumerator = CreateEnumerator();
             if (enumerator == null) return list;
 
             string defaultId = string.Empty;
-            if (enumerator.GetDefaultAudioEndpoint(EDataFlow.eRender, ERole.eMultimedia, out var defDev) == 0 && defDev != null)
+            if (enumerator.GetDefaultAudioEndpoint(dataFlow, ERole.eMultimedia, out var defDev) == 0 && defDev != null)
             {
                 defDev.GetId(out defaultId);
             }
 
-            if (enumerator.EnumAudioEndpoints(EDataFlow.eRender, DEVICE_STATE_ACTIVE, out var collection) != 0 || collection == null)
+            if (enumerator.EnumAudioEndpoints(dataFlow, DEVICE_STATE_ACTIVE, out var collection) != 0 || collection == null)
                 return list;
 
             if (collection.GetCount(out uint count) != 0 || count == 0)
@@ -73,10 +107,11 @@ public class AudioMixerService
                     }
                 }
 
-                list.Add(new AudioOutputDeviceInfo
+                list.Add(new AudioDeviceInfo
                 {
                     Id = id,
                     Name = name,
+                    DeviceType = dataFlow == EDataFlow.eCapture ? AudioDeviceType.Input : AudioDeviceType.Output,
                     IsDefault = string.Equals(id, defaultId, StringComparison.OrdinalIgnoreCase)
                 });
             }
@@ -87,7 +122,7 @@ public class AudioMixerService
         return list;
     }
 
-    public bool SetDefaultOutputDevice(string deviceId)
+    public bool SetDefaultDevice(string deviceId)
     {
         if (string.IsNullOrWhiteSpace(deviceId)) return false;
         try
@@ -107,6 +142,10 @@ public class AudioMixerService
             return false;
         }
     }
+
+    public bool SetDefaultOutputDevice(string deviceId) => SetDefaultDevice(deviceId);
+
+    public bool SetDefaultInputDevice(string deviceId) => SetDefaultDevice(deviceId);
 
     public (double Volume, bool IsMuted, bool Available) GetMasterOutputState()
     {
